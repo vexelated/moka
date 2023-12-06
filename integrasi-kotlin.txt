@@ -1,0 +1,256 @@
+build.gradle:
+implementation 'org.opencv:opencv-android:4.5.3'
+
+
+MainActivity:
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import kotlinx.android.synthetic.main.activity_main.*
+import org.tensorflow.lite.Interpreter
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.util.concurrent.Executors
+import org.opencv.core.CvType
+import org.opencv.core.Mat
+import org.opencv.core.MatOfRect
+import org.opencv.core.Rect
+import org.opencv.core.Scalar
+import org.opencv.core.Size
+import org.opencv.core.CvType.CV_8UC4
+import org.opencv.imgproc.Imgproc
+
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var interpreter: Interpreter
+    private val executor = Executors.newSingleThreadExecutor()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // Load TensorFlow Lite model
+        interpreter = Interpreter(loadModelFile())
+
+	    if (!OpenCVLoader.initDebug()) {
+            Log.e(TAG, "OpenCV initialization failed.")
+        } else {
+            Log.d(TAG, "OpenCV initialization succeeded.")
+        }
+
+        // Request camera permissions
+        if (allPermissionsGranted()) {
+            startCamera()
+        } else {
+            ActivityCompat.requestPermissions(
+                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
+            )
+        }
+    }
+
+    private fun startCamera() {
+        // Set up CameraX use cases
+        val previewConfig = PreviewConfig.Builder().build()
+        val preview = Preview(previewConfig)
+
+        preview.setOnPreviewOutputUpdateListener {
+            val parent = cameraPreview.parent as View
+            parent.removeView(cameraPreview)
+            parent.addView(cameraPreview, 0)
+            cameraPreview.surfaceTexture = it.surfaceTexture
+        }
+
+        // Set up image analysis use case
+        val analyzerConfig = ImageAnalysisConfig.Builder()
+            .setTargetResolution(Size(640, 480))
+            .setImageReaderMode(ImageAnalysis.ImageReaderMode.ACQUIRE_LATEST_IMAGE)
+            .build()
+
+        val analyzer = ImageAnalysis(analyzerConfig).apply {
+            setAnalyzer(executor, ImageAnalyzer())
+        }
+
+        // Bind use cases to lifecycle
+        CameraX.bindToLifecycle(this, preview, analyzer)
+    }
+
+    private inner class ImageAnalyzer : ImageAnalysis.Analyzer {
+        override fun analyze(image: ImageProxy, rotationDegrees: Int) {
+            // Convert ImageProxy to ByteBuffer
+            val byteBuffer = convertImageToByteBuffer(image)
+
+            // Run inference
+            val result = runInference(byteBuffer)
+
+            // Process result and update UI
+            // ...
+
+            image.close()
+        }
+    }
+
+    private fun convertImageToByteBuffer(image: ImageProxy): ByteBuffer {
+        val byteBuffer = ByteBuffer.allocateDirect(INPUT_SIZE * INPUT_SIZE * PIXEL_SIZE)
+        byteBuffer.order(ByteOrder.nativeOrder())
+
+        val pixels = IntArray(INPUT_SIZE * INPUT_SIZE)
+        image.use { img ->
+            img.planes.forEachIndexed { index, plane ->
+                val buffer = plane.buffer
+                val rowStride = plane.rowStride
+                val pixelStride = plane.pixelStride
+
+                val shift = if (index == 0) 0 else 1
+                val w = img.width shr shift
+                val h = img.height shr shift
+
+                buffer.position(rowStride * (h - 1))
+
+                for (y in 0 until h) {
+                    var elementOffset = 0
+                    for (x in 0 until w) {
+                        pixels[y * w + x] = if (pixelStride == 1) {
+                            buffer.get().toInt() and 0xFF
+                        } else {
+                            buffer.get(elementOffset).toInt() and 0xFF
+                            elementOffset += pixelStride
+                        }
+                    }
+                }
+            }
+        }
+
+        // Normalize and flatten the image
+        for (pixelValue in pixels) {
+            val normalizedPixelValue = (pixelValue - 127.5f) / 127.5f
+            byteBuffer.putFloat(normalizedPixelValue)
+        }
+
+        return byteBuffer
+    }
+
+    private fun detectEyes(image: ImageProxy) {
+        val rgbaMat = Mat(image.height, image.width, CV_8UC4)
+
+        // Convert image to Mat
+        val buffer = image.planes[0].buffer
+        val bytes = ByteArray(buffer.remaining())
+        buffer.get(bytes)
+        rgbaMat.put(0, 0, bytes)
+
+        // Convert to grayscale
+        val grayMat = Mat()
+        Imgproc.cvtColor(rgbaMat, grayMat, Imgproc.COLOR_RGBA2GRAY)
+
+        // Load Haar cascade for eyes detection
+        val rightEyeCascadeFile = // Load right eye cascade file from resources
+        val leftEyeCascadeFile = // Load left eye cascade file from resources
+
+        val rightEyes = MatOfRect()
+        val leftEyes = MatOfRect()
+
+        rightEyeCascadeFile.detectMultiScale(grayMat, rightEyes, 1.1, 2, 2, Size(30.0, 30.0), Size())
+        leftEyeCascadeFile.detectMultiScale(grayMat, leftEyes, 1.1, 2, 2, Size(30.0, 30.0), Size())
+
+        // Process detected eyes (e.g., draw rectangles)
+        val rightEyesArray = rightEyes.toArray()
+        val leftEyesArray = leftEyes.toArray()
+
+        for (rect in rightEyesArray) {
+            Imgproc.rectangle(rgbaMat, rect.tl(), rect.br(), Scalar(255.0, 0.0, 0.0), 2)
+        }
+
+        for (rect in leftEyesArray) {
+            Imgproc.rectangle(rgbaMat, rect.tl(), rect.br(), Scalar(0.0, 255.0, 0.0), 2)
+        }
+
+        // Do further processing or update UI as needed
+
+        // Release Mat objects
+        rgbaMat.release()
+        grayMat.release()
+    }
+
+    private fun runInference(byteBuffer: ByteBuffer): FloatArray {
+        // Perform inference using TensorFlow Lite model
+        val outputArray = Array(1) { FloatArray(OUTPUT_CLASSES) }
+        interpreter.run(byteBuffer, outputArray)
+        return outputArray[0]
+    }
+
+    // Helper method to load TensorFlow Lite model
+    private fun loadModelFile(): MappedByteBuffer {
+        // Load model file from assets
+        // ...
+    }
+
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (allPermissionsGranted()) {
+                startCamera()
+            } else {
+                // Handle the case where some permissions are not granted
+            }
+        }
+    }
+
+    companion object {
+        private const val REQUEST_CODE_PERMISSIONS = 10
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+
+        private const val INPUT_SIZE = 224
+        private const val PIXEL_SIZE = 3
+        private const val OUTPUT_CLASSES = 1
+    }
+}
+
+==========================================================
+ini artinya open cv sebagai library python juga bisa digunakan pada kotlin?
+ChatGPT
+OpenCV, atau Open Source Computer Vision Library, awalnya dikembangkan dalam bahasa pemrograman C++. Namun, OpenCV juga menyediakan bindings untuk beberapa bahasa pemrograman lainnya, termasuk Python dan Java. Oleh karena itu, OpenCV dapat digunakan di Kotlin dengan menggunakan Java bindings-nya.
+
+Dalam konteks proyek Android menggunakan Kotlin, Anda dapat mengintegrasikan OpenCV di proyek Anda dengan menambahkan dependency dan melakukan konfigurasi yang diperlukan.
+
+Berikut adalah langkah-langkah umum untuk menggunakan OpenCV di proyek Android dengan Kotlin:
+
+Tambahkan Dependency:
+Buka berkas build.gradle (Module: app) dan tambahkan dependensi OpenCV ke dalam blok dependencies:
+
+gradle
+implementation 'org.opencv:opencv-android:4.5.3'
+
+
+Konfigurasi OpenCVLoader:
+Pada kelas utama aplikasi Android (biasanya MainActivity), tambahkan inisialisasi OpenCVLoader di dalam metode onCreate:
+
+kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+
+    // Initialize OpenCV
+    if (!OpenCVLoader.initDebug()) {
+        Log.e(TAG, "OpenCV initialization failed.")
+    } else {
+        Log.d(TAG, "OpenCV initialization succeeded.")
+    }
+
+    // Your other initialization code...
+}
+
+
+Gunakan Fungsionalitas OpenCV di Kotlin:
+Setelah konfigurasi OpenCV selesai, Anda dapat menggunakan fungsionalitas OpenCV di dalam kelas Kotlin Anda, seperti contoh implementasi deteksi mata yang sebelumnya telah saya berikan.
+
+Dengan langkah-langkah tersebut, Anda dapat mengintegrasikan OpenCV ke dalam proyek Android yang menggunakan Kotlin dan memanfaatkan fungsionalitas pemrosesan citra dan visi komputer yang disediakan oleh OpenCV.
