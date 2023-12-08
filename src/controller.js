@@ -204,7 +204,7 @@ export default {
   history: async (req, res, next) => {
     try {
       const hisId = nanoid.nanoid(10);
-      const { taskId, status } = matchedData(req);
+      const { taskId } = matchedData(req);
 
       // Save history to the database using Sequelize create method
       // const history = await DB.models.History.create({
@@ -214,8 +214,8 @@ export default {
       // });
 
       const [history] = await DB.execute(
-        "INSERT INTO `history` (`idhistory`,`idtask`,`statustask`) VALUES (?,?,?)",
-        [hisId, taskId, status]
+        "INSERT INTO `history` (`idhistory`,`idtask`) VALUES (?,?)",
+        [hisId, taskId]
       );
       
       res.status(200).json({ error: false, message: "success" });
@@ -227,7 +227,7 @@ export default {
 
   getHistory: async (req, res, next) => {
     try {
-      const [rows] = await DB.execute("SELECT * FROM `history`");
+      const [rows] = await DB.execute("SELECT hs.idhistory, ts.idtask, ts.taskname, ts.taskdescription, ts.taskdate, ts.statustask FROM dbmoka.history hs JOIN dbmoka.tasks ts ON hs.idtask = ts.idtask;");
       res.json({
         status: 200,
         message: "All history records displayed successfully",
@@ -235,6 +235,32 @@ export default {
       });
     } catch (err) {
       next(err);
+    }
+  },
+
+  getHistoryById: async (req, res, next) => {
+    try {
+        const historyId = req.params.idhistory;
+
+        const [rows] = await DB.execute(
+            "SELECT hs.idhistory, ts.idtask, ts.taskname, ts.taskdescription, ts.taskdate, ts.statustask FROM dbmoka.history hs JOIN dbmoka.tasks ts ON hs.idtask = ts.idtask WHERE hs.idhistory = ?",
+            [historyId]
+        );
+
+        if (rows.length === 1) {
+            res.json({
+                status: 200,
+                message: `History record with id ${historyId} retrieved successfully`,
+                data: rows[0],
+            });
+        } else {
+            res.status(404).json({
+                status: 404,
+                message: `History record with id ${historyId} not found`,
+            });
+        }
+    } catch (err) {
+        next(err);
     }
   },
 
@@ -275,9 +301,11 @@ export default {
       const taskId = nanoid.nanoid(10);
       const taskDate = new Date().toISOString().slice(0, 19).replace("T", " ");
 
+      const statusTask = false;
+
       const [result] = await DB.execute(
-        "INSERT INTO `tasks` (`idtask`,`taskname`,`taskdescription`,`taskdate`) VALUES (?,?,?,?)",
-        [taskId, taskName, taskDescription, taskDate]
+        "INSERT INTO `tasks` (`idtask`,`taskname`,`taskdescription`,`taskdate`,`statustask`) VALUES (?,?,?,?,?)",
+        [taskId, taskName, taskDescription, taskDate, statusTask]
       );
 
       res.status(201).json({
@@ -302,6 +330,27 @@ export default {
       });
     } catch (err) {
       next(err);
+    }
+  },
+  
+  getTaskByStatus: async (req, res, next) => {
+    try {
+        const [rows] = await DB.execute("SELECT * FROM `tasks` WHERE statusTask = ?", [req.params.statusTask]);
+
+        if (rows.length > 0) {
+            res.json({
+                status: 200,
+                message: `Tasks with status ${req.params.statusTask} retrieved successfully`,
+                data: rows,
+            });
+        } else {
+            res.status(404).json({
+                status: 404,
+                message: "Tasks not found with the given status",
+            });
+        }
+    } catch (err) {
+        next(err);
     }
   },
 
@@ -335,11 +384,11 @@ export default {
       ]);
 
       if (row.length === 1) {
-        const { taskName, taskDescription } = matchedData(req);
+        const { taskName, taskDescription, statusTask } = matchedData(req);
 
         await DB.execute(
-          "UPDATE `tasks` SET `taskname`=?, `taskdescription`=? WHERE `idtask`=?",
-          [taskName, taskDescription, req.params.taskId]
+          "UPDATE `tasks` SET `taskname`=?, `taskdescription`=?, `statustask`=? WHERE `idtask`=?",
+          [taskName, taskDescription, statusTask, req.params.taskId]
         );
 
         res.json({

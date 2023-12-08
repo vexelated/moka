@@ -108,8 +108,7 @@ routes.post(
   "/history",
   tokenValidation(),
   [
-    body("taskId").trim().notEmpty().withMessage("TaskId must not be empty."),
-    body("status").isBoolean().withMessage("Status must be a boolean value."),
+    body("taskId").trim().notEmpty().withMessage("TaskId must not be empty.")
   ],
   validate, // Ensure validate middleware is used here
   controller.history
@@ -120,6 +119,13 @@ routes.get(
   tokenValidation(),
   validate, // Ensure validate middleware is used here
   controller.getHistory
+);
+
+routes.get(
+  "/history/:idhistory",
+  tokenValidation(),
+  validate, // Ensure validate middleware is used here
+  controller.getHistoryById
 );
 
 routes.delete(
@@ -147,6 +153,9 @@ routes.post(
       .isLength({ min: 4 })
       .withMessage("Task description must be at least 4 characters long")
       .escape(),
+    body("statusTask")
+      .isBoolean()
+      .withMessage("Status must be a boolean value."),
   ],
   validate, // Ensure validate middleware is used here
   tokenValidation(),
@@ -155,6 +164,15 @@ routes.post(
 
 // Get all tasks
 routes.get("/task", tokenValidation(), validate, controller.getTasks);
+
+//Get a task by Status
+routes.get(
+  "/task/status/:statusTask",
+  [param("statusTask").isBoolean().toBoolean()],
+  validate,
+  tokenValidation(),
+  controller.getTaskByStatus
+);
 
 // Get a task by ID
 routes.get(
@@ -183,6 +201,10 @@ routes.put(
       .isLength({ min: 4 })
       .withMessage("Task description must be at least 4 characters long")
       .escape(),
+      body("statusTask")
+      .optional() // Status is optional in update
+      .isBoolean()
+      .withMessage("Status must be a boolean value."),
   ],
   validate,
   tokenValidation(),
