@@ -4,6 +4,8 @@ import { createHash } from "crypto";
 import { validationResult, matchedData } from "express-validator";
 import { generateToken, verifyToken } from "./tokenHandler.js";
 import DB from "./dbConnection.js";
+import { uploadToGcs, getPublicUrl } from '../modules/imgUpload.js';
+
 
 const checkIfUserExists = async (email) => {
   try {
@@ -149,6 +151,53 @@ export default {
       next(err);
     }
   },
+
+  // Middleware untuk meng-upload gambar ke Cloud Storage
+uploadImageMiddleware: (req, res, next) => {
+  ImgUpload.uploadToGcs(req, res, next);
+},
+
+updateUser : async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const { name } = matchedData(req);
+
+    // Check if the user exists
+    const [user] = await DB.execute("SELECT * FROM `users` WHERE `id`=?", [
+      userId,
+    ]);
+
+    if (user.length !== 1) {
+      return res.status(404).json({
+        status: 404,
+        message: "User not found",
+      });
+    }
+
+    // Update user's name
+    await DB.execute("UPDATE `users` SET `name`=? WHERE `id`=?", [name, userId]);
+
+    // If there is a file uploaded, update the user's photo
+    if (req.file && req.file.cloudStorageObject) {
+      // Update user's photo URL in the database
+      const photoUrl = getPublicUrl(req.file.cloudStorageObject);
+      await DB.execute("UPDATE `users` SET `photo_url`=? WHERE `id`=?", [
+        photoUrl,
+        userId,
+      ]);
+    }
+
+    res.json({
+      status: 200,
+      message: "User updated successfully",
+      data: {
+        userId,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+},
 
   refreshToken: async (req, res, next) => {
     try {

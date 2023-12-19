@@ -2,6 +2,7 @@
 import express from "express";
 import { body, header, param, validationResult } from "express-validator";
 import controller from "./controller.js"; // Import your controller module
+import imgUpload from "../modules/imgUpload.js";
 
 const { Router } = express;
 const routes = Router();
@@ -91,6 +92,25 @@ routes.post(
   validate,
   controller.login
 );
+
+routes.put(
+  "/user/:userId",
+  [
+    param("userId").trim().notEmpty().escape(),
+    body("name")
+      .trim()
+      .not()
+      .isEmpty()
+      .withMessage("Name must not be empty.")
+      .isLength({ min: 3 })
+      .withMessage("Name must be at least 3 characters long")
+      .escape(),
+  ],
+  validate,
+  tokenValidation(),
+  controller.updateUser
+);
+
 
 // Get the user data by providing the access token
 routes.get("/profile", tokenValidation(), validate, controller.getUser);
