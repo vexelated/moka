@@ -173,7 +173,7 @@ export default {
         });
       }
 
-      // Generating new access and refresh token
+
       const access_token = generateToken({ id: data.id });
       const refresh_token = generateToken({ id: data.id }, false);
 
@@ -181,7 +181,7 @@ export default {
         .update(refresh_token)
         .digest("hex");
 
-      // Replacing the old refresh token to new refresh token
+
       const [result] = await DB.execute(
         "UPDATE `refresh_tokens` SET `token`=? WHERE `token`=?",
         [newMd5Refresh, md5Refresh]
