@@ -8,5 +8,4 @@ In this project we create a machine learning model that can detect drowsiness. T
 ![loss](https://github.com/vexelated/moka/assets/90817390/8eab90d5-fc73-4edf-878f-eb8faaafcca7)
 
 Here is a demo of the machine learning model using python:
-
-![video-demo2](https://github.com/vexelated/moka/assets/90817390/037c4792-6400-4d8b-b727-9f06b3516339)
+https://github.com/vexelated/moka/assets/90817390/037c4792-6400-4d8b-b727-9f06b3516339)
