@@ -20,5 +20,10 @@ Team ID : CH2-PS158
 3. [ML]()
 4. [CC]()
 
+## Project Document
+- [Project Brief]()
+- [GoTo Market Proposal]()
+- [Project Presentation]()
+  
 ## App Demo
 
