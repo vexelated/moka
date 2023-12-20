@@ -1,6 +1,9 @@
 # MOKA: Pomodoro Assistant
+
+## About MOKA
+
 ## Capstone Project Team
-Tim ID : CH2-PS158  
+Team ID : CH2-PS158  
 | Member        | Student ID | Learning Path | University      | GitHub Profile             |
 |---------------|------------|---------------|------------------|----------------------------|
 | Rizal Alfariji | M008BSY0664 | Machine Learning | Universitas Gadjah Mada | [vexelated](https://github.com/vexelated) |
@@ -10,3 +13,12 @@ Tim ID : CH2-PS158
 | Windy Fadhilah Susanti | C296BSX3751 | Cloud Computing | Universitas Pembangunan Nasional Veteran Jawa Timur | [windyfs](https://github.com/windyfs) |
 | Devilia Dwi Candra | A296BSX2518 | Mobile Develpoment | Universitas Pembangunan Nasional Veteran Jawa Timur | [deviliadc](https://github.com/deviliadc) |
 | Pedang Mata Bulan Ikhram | A278BSY2551 | Mobile Develpoment | Universitas Negeri Makassar | [pedang]() |
+
+## Repository Branches
+1. [ALL]()
+2. [MD]()
+3. [ML]()
+4. [CC]()
+
+## App Demo
+
