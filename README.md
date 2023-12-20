@@ -1,4 +1,5 @@
 # MOKA: Pomodoro Assistant
+<img src="https://github.com/vexelated/moka/assets/103621728/b9d9d6b0-6cfa-4de3-8d93-5e21d61449e1" alt="Logo Moka" width="150rm">
 
 ## About MOKA
 
@@ -15,7 +16,7 @@ Team ID : CH2-PS158
 | Pedang Mata Bulan Ikhram | A278BSY2551 | Mobile Develpoment | Universitas Negeri Makassar | [pedang]() |
 
 ## Repository Branches
-1. [ALL]()
+1. [ALL](https://github.com/vexelated/moka)
 2. [MD](https://github.com/vexelated/moka/tree/md-moka)
 3. [ML](https://github.com/vexelated/moka/tree/ml-moka)
 4. [CC](https://github.com/vexelated/moka/tree/ccmoka)
