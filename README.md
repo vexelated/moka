@@ -1,6 +1,7 @@
 # MOKA: Pomodoro Assistant
-<img src="https://github.com/vexelated/moka/assets/103621728/b9d9d6b0-6cfa-4de3-8d93-5e21d61449e1" alt="Logo Moka" width="150rm">
-![MOKA](https://github.com/vexelated/moka/assets/103621728/59487332-fe89-468e-8b62-89f572b484a1)
+<p align="center">
+  <img src="https://github.com/vexelated/moka/assets/103621728/b9d9d6b0-6cfa-4de3-8d93-5e21d61449e1" alt="Logo Moka" width="180rm">
+</p>
 
 ## About MOKA
 
