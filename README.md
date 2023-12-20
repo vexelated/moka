@@ -1,6 +1,6 @@
 # MOKA: Pomodoro Assistant
 ## Design Prototype
-In developing this application, we created a prototype application design using [Figma](https://www.figma.com).<br>
+In developing this application, we created a prototype application design using [Figma](https://www.figma.com).  
 Here is a [link](https://www.figma.com/file/p63qALu5hQNAAKgzvOn900/MOKA---Study-Monitoring?type=design&node-id=0%3A1&mode=design&t=kC9MRKSLbZbEJUnu-1) to our application design.
 
 ## Code Implementation
