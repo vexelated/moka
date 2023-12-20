@@ -1,5 +1,7 @@
 # moka
 Bangkit Capstone project - MOKA: Pomodoro Assistant 
+
+# Cloud Computing
 - Create endpoints for sign up, login, refresh token, user profile, create task, get all task by status, get task by id, update task, delete task, create history, get all history, get history by id, and delete history
 - Create SQL instance to store data
 - Deploy APIs to Cloud Run
@@ -19,7 +21,7 @@ Bangkit Capstone project - MOKA: Pomodoro Assistant
 
 **Request Body :**
 
-> - nama as `string`, Name must be at least 3 characters long
+> - name as `string`, Name must be at least 3 characters long
 > - email as `string`
 > - password as `string`, Password must be at least 4 characters long
 
