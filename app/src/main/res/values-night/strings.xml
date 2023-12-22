@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="Task">Task</string>
+    <string name="History_Task">History_Task</string>
+    <string name="ok_button">Oke\t\t\t</string>
+    <string name="error_title">Error</string>
+    <string name="incomplete_data_message">Data Belum Lengkap</string>
+    <string name="registration_failed_message">Gagal Login\n</string>
+</resources>

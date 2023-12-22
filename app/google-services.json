@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "76236708691",
+    "project_id": "moka-52064",
+    "storage_bucket": "moka-52064.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:76236708691:android:57a4817035b6716b369fa6",
+        "android_client_info": {
+          "package_name": "com.capstoneapps.moka"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "76236708691-tdmlje4rcah53jjm09j1m9c4c5p4lnvv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.capstoneapps.moka",
+            "certificate_hash": "7d8049a9370babbb6a77b5ce04633ac1e288c233"
+          }
+        },
+        {
+          "client_id": "76236708691-7m3pq08ekejomc798l108ol5h1ngqfmj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChY18egW_LCxF8gTLEvSQqg8PhNeSt7B8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "76236708691-7m3pq08ekejomc798l108ol5h1ngqfmj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
