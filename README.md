@@ -3,7 +3,10 @@ Bangkit Capstone project - MOKA: Pomodoro Assistant
 
 # Cloud Computing
 - Create endpoints for sign up, login, refresh token, user profile, create task, get all task by status, get task by id, update task, delete task, create history, get all history, get history by id, and delete history
-- Create SQL instance to store data
+- Tools : NodeJS, ExpressJS, Postman
+
+**Google Cloud Platform Service :**
+- Cloud SQL to store data
 - Deploy APIs to Cloud Run
 
 **Base URL :**
