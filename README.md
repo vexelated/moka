@@ -30,7 +30,7 @@ Team ID : CH2-PS158
 
 ## App Design
 <p align="center">
-  <img src="https://github.com/vexelated/moka/assets/103621728/5e69c91c-7fb0-429a-ad6a-623332f5b9cd" alt="Design Moka" width="240rm">
+  <img src="https://github.com/vexelated/moka/assets/103621728/5e69c91c-7fb0-429a-ad6a-623332f5b9cd" alt="Design Moka">
 </p>
   
 ## App Demo
