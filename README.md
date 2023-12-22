@@ -15,7 +15,7 @@ Team ID : CH2-PS158
 | Muhammad Satrio Bawono Aji | C152BSY3056 | Cloud Computing | Sekolah Tinggi Teknologi Bandung | [muhammadsatrioaji](https://github.com/muhammadsatrioaji) |
 | Windy Fadhilah Susanti | C296BSX3751 | Cloud Computing | Universitas Pembangunan Nasional Veteran Jawa Timur | [windyfs](https://github.com/windyfs) |
 | Devilia Dwi Candra | A296BSX2518 | Mobile Develpoment | Universitas Pembangunan Nasional Veteran Jawa Timur | [deviliadc](https://github.com/deviliadc) |
-| Pedang Mata Bulan Ikhram | A278BSY2551 | Mobile Develpoment | Universitas Negeri Makassar | [pedang]() |
+| Pedang Mata Bulan Ikhram | A278BSY2551 | Mobile Develpoment | Universitas Negeri Makassar | [bulanpedang](https://github.com/bulanpedang) |
 
 ## Repository Branches
 1. [ALL](https://github.com/vexelated/moka)
