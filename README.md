@@ -24,9 +24,14 @@ Team ID : CH2-PS158
 4. [CC](https://github.com/vexelated/moka/tree/ccmoka)
 
 ## Project Document
-- [Project Brief]()
-- [GoTo Market Proposal]()
-- [Project Presentation]()
+- [Project Brief](https://docs.google.com/document/d/1otys8G5nxZDpYGKds0HfOs6ZMvIBhG9iv45yEo3dcgs)
+- [GoTo Market Proposal](https://docs.google.com/document/d/1IEkFqZhrTUUesMn8e7mG5xuu_PzTTg8N3GRzT7eUz5Y)
+- [Project Presentation](https://www.canva.com/design/DAF1jqpKDaA/ZdcUVb5LZ92USzhoCEF_8Q/edit?utm_content=DAF1jqpKDaA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
+## App Design
+<p align="center">
+  <img src="https://github.com/vexelated/moka/assets/103621728/5e69c91c-7fb0-429a-ad6a-623332f5b9cd" alt="Design Moka" width="240rm">
+</p>
   
 ## App Demo
 
